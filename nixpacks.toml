@@ -1,0 +1,5 @@
+[phases.build]
+cmds = ["npm install", "pip3 install Pillow boto3 --break-system-packages"]
+
+[start]
+cmd = "node index.js"
