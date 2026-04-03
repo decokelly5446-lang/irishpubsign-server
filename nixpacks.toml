@@ -1,5 +1,8 @@
-[phases.build]
-cmds = ["npm install", "pip3 install Pillow boto3 --break-system-packages"]
+[phases.setup]
+nixPkgs = ["python311", "python311Packages.pillow", "python311Packages.boto3"]
+
+[phases.install]
+cmds = ["npm install"]
 
 [start]
 cmd = "node index.js"
