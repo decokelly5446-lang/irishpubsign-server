@@ -86,10 +86,25 @@ async function handleSuccessfulOrder(session) {
   } = session.metadata;
 
   const shipping = session.shipping_details;
+  const billing = session.customer_details;
   const customerEmail = session.customer_details?.email;
   const customerName = session.customer_details?.name;
 
+  // Use shipping address, fall back to billing address if shipping fields are blank
+  const shippingAddr = shipping?.address || {};
+  const billingAddr = billing?.address || {};
+
+  const resolvedAddress = {
+    name: shipping?.name || customerName,
+    line1: shippingAddr.line1 || billingAddr.line1 || '',
+    line2: shippingAddr.line2 || billingAddr.line2 || '',
+    city: shippingAddr.city || billingAddr.city || '',
+    postcode: shippingAddr.postal_code || billingAddr.postal_code || '',
+    country: shippingAddr.country || billingAddr.country || 'IE',
+  };
+
   console.log(`Processing order: ${surname}'s ${pub} pub — ${product} ${size}`);
+  console.log('Resolved address:', JSON.stringify(resolvedAddress));
 
   // Step 1: Generate personalised print image
   const imageUrl = await imageService.generatePrintImage({
@@ -106,14 +121,7 @@ async function handleSuccessfulOrder(session) {
     orderReference: session.id,
     customerEmail,
     customerName,
-    shippingAddress: {
-      name: shipping?.name || customerName,
-      line1: shipping?.address?.line1,
-      line2: shipping?.address?.line2 || '',
-      city: shipping?.address?.city,
-      postcode: shipping?.address?.postal_code,
-      country: shipping?.address?.country,
-    },
+    shippingAddress: resolvedAddress,
     productUid: gelato_uid,
     imageUrl,
     quantity: 1,
