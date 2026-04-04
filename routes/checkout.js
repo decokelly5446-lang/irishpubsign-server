@@ -23,7 +23,6 @@ const PRICES = {
 };
 
 // POST /api/create-checkout
-// Body: { name, est, pub, product, size }
 router.post('/create-checkout', async (req, res) => {
   try {
     const { name, est, pub, product, size } = req.body;
@@ -40,7 +39,6 @@ router.post('/create-checkout', async (req, res) => {
     const estLabel = est ? ` · Est. ${est}` : '';
     const amount = PRICES[product][size];
 
-    // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [{
@@ -49,7 +47,6 @@ router.post('/create-checkout', async (req, res) => {
           product_data: {
             name: `${displayName} — ${pubLabel} ${productLabel} (${size})${estLabel}`,
             description: `Personalised Irish pub sign print. Produced and shipped within 3–5 working days.`,
-            images: [`${process.env.BASE_URL}/images/preview-${pub}.jpg`],
           },
           unit_amount: amount,
         },
@@ -58,11 +55,13 @@ router.post('/create-checkout', async (req, res) => {
       mode: 'payment',
       success_url: `${process.env.BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.BASE_URL}/`,
+      // Always collect full shipping address — required fields for Gelato
       shipping_address_collection: {
         allowed_countries: ['IE', 'GB', 'US', 'AU', 'CA', 'DE', 'FR', 'NL', 'ES', 'IT'],
       },
+      // Require billing address so address fields are always filled
+      billing_address_collection: 'required',
       metadata: {
-        // Store all order details in metadata — retrieved in webhook
         surname: name,
         est: est || '',
         pub,
