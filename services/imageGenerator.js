@@ -5,16 +5,16 @@ const https = require('https');
 
 const PUB_CONFIG = {
   city: {
-    imageUrl: 'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/City_Pub.png',
-    fasciaX: 0.5067, fasciaY: 0.596, fasciaMaxWidth: 0.586,
+    imageUrl: 'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/CITY.png',
+    fasciaX: 0.5071, fasciaY: 0.5991, fasciaMaxWidth: 0.6135,
     fasciaFontSize: 0.058, fasciaColor: '#E8C96A',
-    estX: 0.5039, estY: 0.652, estFontSize: 0.019, estColor: '#E8C96A',
+    estX: 0.5051, estY: 0.6557, estFontSize: 0.019, estColor: '#E8C96A',
   },
   seaside: {
-    imageUrl: 'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/Sea_Side.png',
-    fasciaX: 0.4917, fasciaY: 0.497, fasciaMaxWidth: 0.494,
+    imageUrl: 'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/SEASIDE.png',
+    fasciaX: 0.4957, fasciaY: 0.5128, fasciaMaxWidth: 0.5000,
     fasciaFontSize: 0.044, fasciaColor: '#1C3A48',
-    estX: 0.556, estY: 0.5403, estFontSize: 0.016, estColor: '#3A5A6A',
+    estX: 0.5630, estY: 0.5547, estFontSize: 0.016, estColor: '#3A5A6A',
   }
 };
 
@@ -67,8 +67,8 @@ print('UPLOADED')
 
 async function generatePrintImage({ surname, est, pub, size }) {
   const cfg = PUB_CONFIG[pub];
-  const canvasW = 3600;
-  const canvasH = 4800;
+  const canvasW = 3508;
+  const canvasH = 4961;
 
   const displayName = surname.toUpperCase().endsWith("'S") || surname.toUpperCase().endsWith('S')
     ? surname.toUpperCase()
