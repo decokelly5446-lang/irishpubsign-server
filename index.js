@@ -14,6 +14,14 @@ app.use('/webhook/stripe', express.raw({ type: 'application/json' }));
 // JSON body for all other routes
 app.use(express.json());
 
+// Redirect www to apex
+app.use((req, res, next) => {
+  if (req.headers.host && req.headers.host.startsWith('www.')) {
+    return res.redirect(301, 'https://irishpubsign.com' + req.url);
+  }
+  next();
+});
+
 // ── ROUTES ──
 app.use('/api', require('./routes/checkout'));
 app.use('/webhook', require('./routes/webhooks'));
