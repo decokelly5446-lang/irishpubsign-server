@@ -335,25 +335,11 @@ main { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 4rem; }
 <!-- SCREEN 3 -->
 <div id="screen-3" class="screen">
   <button class="back-link" onclick="setScreen(2)">← Back</button>
-  <div class="checkout-banner">
-    <span class="ico">🔒</span>
-    <h2>Secure Checkout</h2>
-    <p>Your personalised print is produced and shipped within 3–5 working days. Delivered worldwide.</p>
-  </div>
-  <div class="stripe-form">
-    <div class="stripe-lbl">Card details — secured by Stripe</div>
-    <div class="stripe-field">Card number</div>
-    <div class="stripe-row"><div class="stripe-field">MM / YY</div><div class="stripe-field">CVC</div></div>
-    <div class="stripe-field">Name on card</div>
-    <div class="stripe-field">Email address</div>
-    <div class="powered">Secured by Stripe · SSL encrypted</div>
-  </div>
   <div class="order-summary">
     <div class="sum-row"><span class="lbl">Order</span><span class="val" id="sum-order-label">Murphy's — City Pub</span></div>
     <div class="sum-row total"><span>Total</span><span class="val" id="sum-total-3">€35</span></div>
   </div>
   <button class="cta-btn" onclick="placeOrder()">Complete Order — <span id="cta-total">€35</span></button>
-  <p class="proto-note">This is a prototype — no payment will be taken</p>
 </div>
 
 </main>
