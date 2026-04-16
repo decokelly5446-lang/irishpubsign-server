@@ -584,11 +584,11 @@ header {
         <div class="field-label">Choose your pub</div>
         <div class="pub-options">
           <div class="pub-option selected" id="opt-city" onclick="selectPub('city')">
-            <img src="/images/CITY.png" alt="City pub" onerror="this.style.display='none'"/>
+            <img src="https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/CITY.png" alt="City pub" onerror="this.style.display='none'"/>
             <div class="pub-option-label">City Pub</div>
           </div>
           <div class="pub-option" id="opt-seaside" onclick="selectPub('seaside')">
-            <img src="/images/SEASIDE.png" alt="Seaside pub" onerror="this.style.display='none'"/>
+            <img src="https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/SEASIDE.png" alt="Seaside pub" onerror="this.style.display='none'"/>
             <div class="pub-option-label">Seaside Pub</div>
           </div>
         </div>
@@ -758,8 +758,8 @@ const FONT_SIZES = {
 
 // Load both images
 Promise.all([
-  loadImage('city',    '/images/CITY.png'),
-  loadImage('seaside', '/images/SEASIDE.png')
+  loadImage('city',    'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/CITY.png'),
+  loadImage('seaside', 'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/SEASIDE.png')
 ]).then(() => updatePreview());
 
 // ── FONT LOADING ──
