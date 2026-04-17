@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>IrishPubSign.com — Create Your Print</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">h
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=Uncial+Antiqua&family=Vast+Shadow&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -222,12 +222,13 @@ header {
 
 .pub-option img {
   width: 100%;
-  height: 100px;
-  object-fit: cover;
-  object-position: center 60%;
+  height: 160px;
+  object-fit: contain;
+  object-position: center center;
   border-radius: 2px;
   display: block;
   margin-bottom: 0.4rem;
+  background: var(--parchment-dark);
 }
 
 .pub-option-label {
@@ -584,11 +585,11 @@ header {
         <div class="field-label">Choose your pub</div>
         <div class="pub-options">
           <div class="pub-option selected" id="opt-city" onclick="selectPub('city')">
-            <img src="https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/CITY.png" alt="City pub" onerror="this.style.display='none'"/>
+            <img src="/images/CITY.png" alt="City pub" onerror="this.style.display='none'"/>
             <div class="pub-option-label">City Pub</div>
           </div>
           <div class="pub-option" id="opt-seaside" onclick="selectPub('seaside')">
-            <img src="https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/SEASIDE.png" alt="Seaside pub" onerror="this.style.display='none'"/>
+            <img src="/images/SEASIDE.png" alt="Seaside pub" onerror="this.style.display='none'"/>
             <div class="pub-option-label">Seaside Pub</div>
           </div>
         </div>
@@ -732,6 +733,13 @@ const PRICES = {
   framed: { A4: 75, A3: 85, A2: 95 }
 };
 
+// ── APOSTROPHE HELPER ──
+function pubDisplayName(name) {
+  if (!name) return '';
+  const upper = name.toUpperCase();
+  return upper.endsWith('S') ? upper + "'" : upper + "'S";
+}
+
 // ── IMAGES ──
 const pubImages = {};
 function loadImage(key, src) {
@@ -785,35 +793,37 @@ function updatePreview() {
   } else {
     ctx.fillStyle = '#EDE0C4';
     ctx.fillRect(0, 0, W, H);
+    setTimeout(updatePreview, 600);
+    return;
   }
 
   const c = COORDS[state.pub];
   const fs = FONT_SIZES[state.pub];
 
-  // Fascia name
-  const name = state.name || (state.pub === 'city' ? 'Murphy' : 'Kelly');
-  const displayName = name.toUpperCase();
+  // Fascia name with apostrophe s
+  const rawName = state.name || (state.pub === 'city' ? 'Murphy' : 'Kelly');
+  const fasciaText = pubDisplayName(rawName);
   const fasciaSize = Math.round(W * fs.fascia);
   ctx.font = `${fasciaSize}px 'Vast Shadow', serif`;
-  ctx.fillStyle = state.pub === 'city' ? '#F0DC98' : '#F0DC98';
+  ctx.fillStyle = state.pub === 'city' ? '#F0DC98' : '#2C1F0E';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
   // Auto-shrink if name is long
   let fontSize = fasciaSize;
   const maxWidth = W * (state.pub === 'city' ? 0.55 : 0.62);
-  while (ctx.measureText(displayName).width > maxWidth && fontSize > 12) {
+  while (ctx.measureText(fasciaText).width > maxWidth && fontSize > 12) {
     fontSize -= 2;
     ctx.font = `${fontSize}px 'Vast Shadow', serif`;
   }
 
-  ctx.fillText(displayName, W * c.fasciaX, H * c.fasciaY);
+  ctx.fillText(fasciaText, W * c.fasciaX, H * c.fasciaY);
 
   // Est. year
   const estText = state.est || '1845';
   const estSize = Math.round(W * fs.est);
   ctx.font = `${estSize}px 'Vast Shadow', serif`;
-  ctx.fillStyle = '#F0DC98';
+  ctx.fillStyle = state.pub === 'city' ? '#F0DC98' : '#2C1F0E';
   ctx.fillText(estText, W * c.estX, H * c.estY);
 
   updatePreviewTag();
