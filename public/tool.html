@@ -737,7 +737,9 @@ const PRICES = {
 function pubDisplayName(name) {
   if (!name) return '';
   const upper = name.toUpperCase();
-  return upper.endsWith('S') ? upper + "'" : upper + "'S";
+  // If ends in S, show name as-is (Collins, Hughes etc)
+  // Otherwise add 's (Murphy's, Kelly's etc)
+  return upper.endsWith('S') ? upper : upper + "'S";
 }
 
 // ── IMAGES ──
@@ -760,7 +762,7 @@ const COORDS = {
 // Font sizes relative to canvas width
 const FONT_SIZES = {
   city:    { fascia: 0.072, est: 0.028 },
-  seaside: { fascia: 0.052, est: 0.022 }
+  seaside: { fascia: 0.052, est: 0.016 }
 };
 
 // Load both images
