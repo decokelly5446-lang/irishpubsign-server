@@ -584,11 +584,11 @@ header {
         <div class="field-label">Choose your pub</div>
         <div class="pub-options">
           <div class="pub-option selected" id="opt-city" onclick="selectPub('city')">
-            <img src="/pub-image/CITY.png" alt="City pub" onerror="this.style.display='none'"/>
+            <img src="https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/CITY.png" alt="City pub" onerror="this.style.display='none'"/>
             <div class="pub-option-label">City Pub</div>
           </div>
           <div class="pub-option" id="opt-seaside" onclick="selectPub('seaside')">
-            <img src="/pub-image/SEASIDE.png" alt="Seaside pub" onerror="this.style.display='none'"/>
+            <img src="https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/SEASIDE.png" alt="Seaside pub" onerror="this.style.display='none'"/>
             <div class="pub-option-label">Seaside Pub</div>
           </div>
         </div>
@@ -737,7 +737,6 @@ const pubImages = {};
 function loadImage(key, src) {
   return new Promise(resolve => {
     const img = new Image();
-    img.crossOrigin = 'anonymous';
     img.onload = () => { pubImages[key] = img; resolve(); };
     img.onerror = () => resolve();
     img.src = src;
@@ -758,8 +757,8 @@ const FONT_SIZES = {
 
 // Load both images
 Promise.all([
-  loadImage('city',    '/pub-image/CITY.png'),
-  loadImage('seaside', '/pub-image/SEASIDE.png')
+  loadImage('city',    'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/CITY.png'),
+  loadImage('seaside', 'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/SEASIDE.png')
 ]).then(() => updatePreview());
 
 // ── FONT LOADING ──
