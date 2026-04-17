@@ -542,17 +542,21 @@ footer {
   let idx = 0;
   const input = document.getElementById('heroName');
 
-  setInterval(() => {
+  function cyclePlaceholder() {
     if (document.activeElement === input) return;
     idx = (idx + 1) % NAMES.length;
-    const a = NAMES[idx];
-    const b = NAMES[(idx + 5) % NAMES.length];
-    const c = NAMES[(idx + 11) % NAMES.length];
-    input.placeholder = a + ', ' + b + ', ' + c + '…';
-  }, 2400);
+    input.placeholder = NAMES[idx] + '…';
+  }
+
+  // Set first name immediately, then cycle
+  input.placeholder = NAMES[0] + '…';
+  setInterval(cyclePlaceholder, 1800);
 
   input.addEventListener('focus', () => {
     input.placeholder = 'Enter your surname';
+  });
+  input.addEventListener('blur', () => {
+    if (!input.value) input.placeholder = NAMES[idx] + '…';
   });
 
   function goToTool() {
