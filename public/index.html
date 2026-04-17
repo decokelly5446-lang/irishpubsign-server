@@ -232,7 +232,7 @@ h1 span {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 1.5rem 0.5rem 0;
+  padding: 0.25rem 1rem 0.25rem 0;
   position: relative;
   animation: fadeRight 0.8s ease 0.25s both;
   overflow: hidden;
@@ -526,6 +526,7 @@ footer {
   let nameIdx = 0;
   let fadeOpacity = 1;
   let fadingIn = false;
+  let fadeRafId = null;
 
   // ── LOAD IMAGE ──
   function loadImg(key, src) {
@@ -574,11 +575,11 @@ footer {
       fontSize -= 2;
       ctx.font = `${fontSize}px 'Vast Shadow', serif`;
     }
-    // Text shadow for depth
-    ctx.shadowColor = 'rgba(0,0,0,0.45)';
-    ctx.shadowBlur = Math.round(W * 0.012);
-    ctx.shadowOffsetX = Math.round(W * 0.003);
-    ctx.shadowOffsetY = Math.round(W * 0.003);
+    // Text shadow for depth — match tool page
+    ctx.shadowColor = 'rgba(0,0,0,0.65)';
+    ctx.shadowBlur = Math.round(W * 0.018);
+    ctx.shadowOffsetX = Math.round(W * 0.004);
+    ctx.shadowOffsetY = Math.round(W * 0.005);
     ctx.fillText(fasciaText, W * c.fasciaX, H * c.fasciaY);
     ctx.shadowColor = 'transparent';
     ctx.shadowBlur = 0;
@@ -593,56 +594,37 @@ footer {
 
   function fadeTransition(toPub, toName) {
     if (fadingIn) return;
-    nextPub = toPub;
-    nextName = toName;
     fadingIn = true;
-    fadeOpacity = 1;
-    let lastTime = null;
+    const canvas = document.getElementById('heroCanvas');
 
-    function fadeOut(ts) {
-      if (!lastTime) lastTime = ts;
-      const delta = ts - lastTime;
-      lastTime = ts;
-      fadeOpacity -= delta / 400; // 400ms fade out
-      if (fadeOpacity <= 0) {
-        fadeOpacity = 0;
-        currentPub = nextPub;
-        lastTime = null;
-        document.getElementById('dot-city').classList.toggle('active', currentPub === 'city');
-        document.getElementById('dot-seaside').classList.toggle('active', currentPub === 'seaside');
-        requestAnimationFrame(fadeIn);
-      } else {
-        drawCanvas(currentPub, toName, fadeOpacity);
-        requestAnimationFrame(fadeOut);
-      }
-    }
+    // Use CSS transition for buttery smooth fade
+    canvas.style.transition = 'opacity 0.5s ease';
+    canvas.style.opacity = '0';
 
-    function fadeIn(ts) {
-      if (!lastTime) lastTime = ts;
-      const delta = ts - lastTime;
-      lastTime = ts;
-      fadeOpacity += delta / 400; // 400ms fade in
-      if (fadeOpacity >= 1) {
-        fadeOpacity = 1;
-        fadingIn = false;
-        drawCanvas(currentPub, toName, 1);
-      } else {
-        drawCanvas(currentPub, toName, fadeOpacity);
-        requestAnimationFrame(fadeIn);
-      }
-    }
-
-    requestAnimationFrame(fadeOut);
+    setTimeout(() => {
+      // Swap content while invisible
+      currentPub = toPub;
+      document.getElementById('dot-city').classList.toggle('active', currentPub === 'city');
+      document.getElementById('dot-seaside').classList.toggle('active', currentPub === 'seaside');
+      drawCanvas(currentPub, toName, 1);
+      // Fade back in
+      canvas.style.opacity = '1';
+      setTimeout(() => { fadingIn = false; }, 520);
+    }, 520);
   }
 
   // ── SIZE CANVAS TO CONTAINER ──
   function sizeCanvas() {
     const canvas = document.getElementById('heroCanvas');
     const wrap = canvas.parentElement;
-    const h = wrap.clientHeight || 400;
-    const w = Math.round(h * (3508/4961));
-    canvas.width = w;
-    canvas.height = h;
+    const displayH = wrap.clientHeight || 500;
+    const displayW = Math.round(displayH * (3508/4961));
+    // Render at 2x resolution for crisp text, CSS scales it down
+    const scale = 2;
+    canvas.width = displayW * scale;
+    canvas.height = displayH * scale;
+    canvas.style.width = displayW + 'px';
+    canvas.style.height = displayH + 'px';
     drawCanvas(currentPub, NAMES[nameIdx], 1);
   }
 
