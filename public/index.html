@@ -439,18 +439,11 @@ footer {
 
   <div class="panel-right">
     <div class="pub-frame">
-      <img
-        id="pubImg"
-        class="pub-img"
-        src="https://pub-cf7a6d9fc8f54a55a2f5a00e3b3c4d12.r2.dev/CITY.png"
-        alt="Personalised Irish pub sign print"
-        onload="this.classList.add('visible')"
-        onerror="handleImgError(this)"
-      />
+      <canvas id="heroCanvas" class="pub-img visible"></canvas>
     </div>
     <div class="pub-dots">
-      <div class="pub-dot active" onclick="switchPub('city', this)"></div>
-      <div class="pub-dot" onclick="switchPub('seaside', this)"></div>
+      <div class="pub-dot active" id="dot-city"></div>
+      <div class="pub-dot" id="dot-seaside"></div>
     </div>
   </div>
 
@@ -507,81 +500,178 @@ footer {
 </div>
 
 <script>
-  // Pub images — update with your actual R2 public URL
-  const PUBS = {
-    city:    'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/CITY.png',
-    seaside: 'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/SEASIDE.png'
+  // ── CONFIG ──
+  const R2 = 'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev';
+  const PUB_URLS = { city: R2+'/CITY.png', seaside: R2+'/SEASIDE.png' };
+
+  const COORDS = {
+    city:    { fasciaX: 0.5071, fasciaY: 0.5991, estX: 0.5051, estY: 0.6557 },
+    seaside: { fasciaX: 0.4957, fasciaY: 0.5128, estX: 0.5630, estY: 0.5590 }
+  };
+  const FONT_SIZES = {
+    city:    { fascia: 0.072 },
+    seaside: { fascia: 0.052 }
+  };
+  const FASCIA_COLOURS = {
+    city:    '#F0DC98',
+    seaside: '#2C1F0E'
   };
 
-  let currentPub = 'city';
-
-  function handleImgError(img) {
-    // Try server-relative path as fallback
-    if (!img.src.startsWith(window.location.origin)) {
-      img.src = '/images/' + (currentPub === 'city' ? 'CITY.png' : 'SEASIDE.png');
-    }
-  }
-
-  function switchPub(pub, dotEl) {
-    if (pub === currentPub) return;
-    currentPub = pub;
-    const img = document.getElementById('pubImg');
-    img.classList.remove('visible');
-    setTimeout(() => {
-      img.src = PUBS[pub];
-      img.onload = () => img.classList.add('visible');
-      img.onerror = () => handleImgError(img);
-    }, 300);
-    document.querySelectorAll('.pub-dot').forEach(d => d.classList.remove('active'));
-    if (dotEl) dotEl.classList.add('active');
-    else {
-      const dots = document.querySelectorAll('.pub-dot');
-      dots.forEach((d, i) => d.classList.toggle('active', (pub === 'city' ? 0 : 1) === i));
-    }
-  }
-
-  // Auto-rotate pubs every 5 seconds with smooth fade
-  setInterval(() => {
-    const next = currentPub === 'city' ? 'seaside' : 'city';
-    const dots = document.querySelectorAll('.pub-dot');
-    const nextDot = next === 'city' ? dots[0] : dots[1];
-    switchPub(next, nextDot);
-  }, 5000);
-
-  // Cycle placeholder surnames
-  const NAMES = ['Murphy','O\'Brien','Kelly','Walsh','Sullivan','O\'Connor',
-    'McCarthy','Byrne','Ryan','O\'Neill','Doyle','Brennan','Burke',
+  const NAMES = ['Murphy',"O'Brien",'Kelly','Walsh','Sullivan',"O'Connor",
+    'McCarthy','Byrne','Ryan',"O'Neill",'Doyle','Brennan','Burke',
     'Collins','Gallagher','Kennedy','Lynch','Murray','Quinn','Fitzgerald'];
-  let idx = 0;
-  const input = document.getElementById('heroName');
 
-  function cyclePlaceholder() {
-    if (document.activeElement === input) return;
-    idx = (idx + 1) % NAMES.length;
-    input.placeholder = NAMES[idx] + '…';
+  const pubImages = {};
+  let currentPub = 'city';
+  let nameIdx = 0;
+  let fadeOpacity = 1;
+  let fadingIn = false;
+
+  // ── LOAD IMAGE ──
+  function loadImg(key, src) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => { pubImages[key] = img; resolve(); };
+      img.onerror = () => resolve();
+      img.src = src;
+    });
   }
 
-  // Set first name immediately, then cycle
-  input.placeholder = NAMES[0] + '…';
-  setInterval(cyclePlaceholder, 1800);
+  // ── APOSTROPHE ──
+  function formatName(name) {
+    const u = name.toUpperCase();
+    return u.endsWith('S') ? u : u + "'S";
+  }
 
-  input.addEventListener('focus', () => {
-    input.placeholder = 'Enter your surname';
-  });
-  input.addEventListener('blur', () => {
-    if (!input.value) input.placeholder = NAMES[idx] + '…';
-  });
+  // ── CANVAS DRAW ──
+  function drawCanvas(pub, name, opacity) {
+    const canvas = document.getElementById('heroCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width;
+    const H = canvas.height;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalAlpha = opacity;
+
+    const img = pubImages[pub];
+    if (!img) return;
+    ctx.drawImage(img, 0, 0, W, H);
+
+    const c = COORDS[pub];
+    const fs = FONT_SIZES[pub];
+    const colour = FASCIA_COLOURS[pub];
+    const fasciaText = formatName(name);
+
+    let fontSize = Math.round(W * fs.fascia);
+    ctx.font = `${fontSize}px 'Vast Shadow', serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = colour;
+
+    const maxWidth = W * (pub === 'city' ? 0.55 : 0.62);
+    while (ctx.measureText(fasciaText).width > maxWidth && fontSize > 10) {
+      fontSize -= 2;
+      ctx.font = `${fontSize}px 'Vast Shadow', serif`;
+    }
+    ctx.fillText(fasciaText, W * c.fasciaX, H * c.fasciaY);
+    ctx.globalAlpha = 1;
+  }
+
+  // ── SMOOTH FADE TRANSITION ──
+  let nextPub = null;
+  let nextName = null;
+
+  function fadeTransition(toPub, toName) {
+    if (fadingIn) return;
+    nextPub = toPub;
+    nextName = toName;
+    fadingIn = true;
+    fadeOpacity = 1;
+
+    function fadeOut() {
+      fadeOpacity -= 0.06;
+      if (fadeOpacity <= 0) {
+        fadeOpacity = 0;
+        currentPub = nextPub;
+        // Update dots
+        document.getElementById('dot-city').classList.toggle('active', currentPub === 'city');
+        document.getElementById('dot-seaside').classList.toggle('active', currentPub === 'seaside');
+        requestAnimationFrame(fadeIn);
+      } else {
+        drawCanvas(currentPub, nextName, fadeOpacity);
+        requestAnimationFrame(fadeOut);
+      }
+    }
+
+    function fadeIn() {
+      fadeOpacity += 0.06;
+      if (fadeOpacity >= 1) {
+        fadeOpacity = 1;
+        fadingIn = false;
+        drawCanvas(currentPub, nextName, 1);
+      } else {
+        drawCanvas(currentPub, nextName, fadeOpacity);
+        requestAnimationFrame(fadeIn);
+      }
+    }
+
+    requestAnimationFrame(fadeOut);
+  }
+
+  // ── SIZE CANVAS TO CONTAINER ──
+  function sizeCanvas() {
+    const canvas = document.getElementById('heroCanvas');
+    const wrap = canvas.parentElement;
+    const h = wrap.clientHeight || 400;
+    const w = Math.round(h * (3508/4961));
+    canvas.width = w;
+    canvas.height = h;
+    drawCanvas(currentPub, NAMES[nameIdx], 1);
+  }
+
+  // ── AUTO CYCLE ──
+  // Every 3s: new name. Every 6s (alternate): also switch pub.
+  let cycleCount = 0;
+  setInterval(() => {
+    cycleCount++;
+    nameIdx = (nameIdx + 1) % NAMES.length;
+    const newPub = cycleCount % 2 === 0
+      ? (currentPub === 'city' ? 'seaside' : 'city')
+      : currentPub;
+    fadeTransition(newPub, NAMES[nameIdx]);
+    // Also update input placeholder
+    const input = document.getElementById('heroName');
+    if (document.activeElement !== input && !input.value) {
+      input.placeholder = NAMES[nameIdx] + '…';
+    }
+  }, 3000);
+
+  // ── INPUT ──
+  const input = document.getElementById('heroName');
+  input.placeholder = NAMES[0] + '…';
+
+  input.addEventListener('focus', () => { input.placeholder = 'Enter your surname'; });
+  input.addEventListener('blur', () => { if (!input.value) input.placeholder = NAMES[nameIdx] + '…'; });
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') goToTool(); });
 
   function goToTool() {
     const name = input.value.trim();
     window.location.href = name ? '/tool?name=' + encodeURIComponent(name) : '/tool';
   }
 
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') goToTool();
+  // ── INIT ──
+  const vastFont = new FontFace('Vast Shadow', 'url(https://fonts.gstatic.com/s/vastshadow/v19/pe0qMImKOZ1V62ZwbVY9dfe6.woff2)');
+  Promise.all([
+    vastFont.load().then(f => document.fonts.add(f)).catch(()=>{}),
+    loadImg('city', PUB_URLS.city),
+    loadImg('seaside', PUB_URLS.seaside)
+  ]).then(() => {
+    sizeCanvas();
+    window.addEventListener('resize', sizeCanvas);
   });
 
-  // Currency detection
+  // ── CURRENCY ──
   async function detectCurrency() {
     try {
       const r = await fetch('https://ipapi.co/json/');
