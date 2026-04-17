@@ -540,11 +540,13 @@ footer {
     }
   }
 
-  // Auto-rotate pubs every 4 seconds
+  // Auto-rotate pubs every 5 seconds with smooth fade
   setInterval(() => {
     const next = currentPub === 'city' ? 'seaside' : 'city';
-    switchPub(next, null);
-  }, 4000);
+    const dots = document.querySelectorAll('.pub-dot');
+    const nextDot = next === 'city' ? dots[0] : dots[1];
+    switchPub(next, nextDot);
+  }, 5000);
 
   // Cycle placeholder surnames
   const NAMES = ['Murphy','O\'Brien','Kelly','Walsh','Sullivan','O\'Connor',
