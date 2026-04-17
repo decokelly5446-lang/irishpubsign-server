@@ -756,28 +756,25 @@ function loadImage(key, src) {
 // Canvas coords (3508×4961 normalised)
 const COORDS = {
   city:    { fasciaX: 0.5071, fasciaY: 0.5991, estX: 0.5051, estY: 0.6557 },
-  seaside: { fasciaX: 0.4957, fasciaY: 0.5128, estX: 0.5630, estY: 0.5547 }
+  seaside: { fasciaX: 0.4957, fasciaY: 0.5128, estX: 0.5630, estY: 0.5590 }
 };
 
 // Font sizes relative to canvas width
 const FONT_SIZES = {
   city:    { fascia: 0.072, est: 0.028 },
-  seaside: { fascia: 0.052, est: 0.016 }
+  seaside: { fascia: 0.052, est: 0.013 }
 };
 
-// Load both images
-Promise.all([
-  loadImage('city',    'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/CITY.png'),
-  loadImage('seaside', 'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/SEASIDE.png')
-]).then(() => updatePreview());
-
-// ── FONT LOADING ──
-let vastShadowLoaded = false;
-const font = new FontFace('Vast Shadow', 'url(https://fonts.gstatic.com/s/vastshadow/v19/pe0qMImKOZ1V62ZwbVY9dfe6.woff2)');
-font.load().then(f => {
+// ── FONT LOADING — load font first, then images ──
+const vastFont = new FontFace('Vast Shadow', 'url(https://fonts.gstatic.com/s/vastshadow/v19/pe0qMImKOZ1V62ZwbVY9dfe6.woff2)');
+vastFont.load().then(f => {
   document.fonts.add(f);
-  vastShadowLoaded = true;
-  updatePreview();
+}).catch(() => {}).finally(() => {
+  // Load images after font attempt (success or fail)
+  Promise.all([
+    loadImage('city',    'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/CITY.png'),
+    loadImage('seaside', 'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/SEASIDE.png')
+  ]).then(() => updatePreview());
 });
 
 // ── CANVAS RENDER ──
