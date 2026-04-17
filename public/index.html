@@ -232,19 +232,27 @@ h1 span {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.25rem 1rem 0.25rem 0;
+  padding: 0.5rem 1rem 0.5rem 0;
   position: relative;
   animation: fadeRight 0.8s ease 0.25s both;
   overflow: hidden;
+  min-height: 0;
 }
 
 .pub-frame {
   position: relative;
-  height: 100%;
   width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+#heroCanvas {
+  display: block;
+  filter: drop-shadow(0 6px 28px rgba(44,31,14,0.18));
+  max-height: 100%;
+  max-width: 100%;
 }
 
 .pub-img {
@@ -616,15 +624,21 @@ footer {
   // ── SIZE CANVAS TO CONTAINER ──
   function sizeCanvas() {
     const canvas = document.getElementById('heroCanvas');
-    const wrap = canvas.parentElement;
-    const displayH = wrap.clientHeight || 500;
-    const displayW = Math.round(displayH * (3508/4961));
-    // Render at 2x resolution for crisp text, CSS scales it down
-    const scale = 2;
-    canvas.width = displayW * scale;
-    canvas.height = displayH * scale;
-    canvas.style.width = displayW + 'px';
-    canvas.style.height = displayH + 'px';
+    const frame = canvas.parentElement;
+    // Match tool page: use fixed width of 600px internally, scale via CSS
+    const frameH = frame.clientHeight || 600;
+    const frameW = frame.clientWidth || 600;
+    // Use 600px internal width (same as tool page) for identical font rendering
+    const internalW = 600;
+    const internalH = Math.round(internalW * (4961/3508));
+    canvas.width = internalW;
+    canvas.height = internalH;
+    // Scale to fit the frame while preserving aspect ratio
+    const scaleToFit = Math.min(frameW / internalW, frameH / internalH);
+    const dispW = Math.round(internalW * scaleToFit);
+    const dispH = Math.round(internalH * scaleToFit);
+    canvas.style.width = dispW + 'px';
+    canvas.style.height = dispH + 'px';
     drawCanvas(currentPub, NAMES[nameIdx], 1);
   }
 
