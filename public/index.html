@@ -232,7 +232,7 @@ h1 span {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem 2rem 1rem 0.5rem;
+  padding: 0.5rem 1.5rem 0.5rem 0;
   position: relative;
   animation: fadeRight 0.8s ease 0.25s both;
   overflow: hidden;
@@ -574,7 +574,16 @@ footer {
       fontSize -= 2;
       ctx.font = `${fontSize}px 'Vast Shadow', serif`;
     }
+    // Text shadow for depth
+    ctx.shadowColor = 'rgba(0,0,0,0.45)';
+    ctx.shadowBlur = Math.round(W * 0.012);
+    ctx.shadowOffsetX = Math.round(W * 0.003);
+    ctx.shadowOffsetY = Math.round(W * 0.003);
     ctx.fillText(fasciaText, W * c.fasciaX, H * c.fasciaY);
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
     ctx.globalAlpha = 1;
   }
 
@@ -588,30 +597,37 @@ footer {
     nextName = toName;
     fadingIn = true;
     fadeOpacity = 1;
+    let lastTime = null;
 
-    function fadeOut() {
-      fadeOpacity -= 0.06;
+    function fadeOut(ts) {
+      if (!lastTime) lastTime = ts;
+      const delta = ts - lastTime;
+      lastTime = ts;
+      fadeOpacity -= delta / 400; // 400ms fade out
       if (fadeOpacity <= 0) {
         fadeOpacity = 0;
         currentPub = nextPub;
-        // Update dots
+        lastTime = null;
         document.getElementById('dot-city').classList.toggle('active', currentPub === 'city');
         document.getElementById('dot-seaside').classList.toggle('active', currentPub === 'seaside');
         requestAnimationFrame(fadeIn);
       } else {
-        drawCanvas(currentPub, nextName, fadeOpacity);
+        drawCanvas(currentPub, toName, fadeOpacity);
         requestAnimationFrame(fadeOut);
       }
     }
 
-    function fadeIn() {
-      fadeOpacity += 0.06;
+    function fadeIn(ts) {
+      if (!lastTime) lastTime = ts;
+      const delta = ts - lastTime;
+      lastTime = ts;
+      fadeOpacity += delta / 400; // 400ms fade in
       if (fadeOpacity >= 1) {
         fadeOpacity = 1;
         fadingIn = false;
-        drawCanvas(currentPub, nextName, 1);
+        drawCanvas(currentPub, toName, 1);
       } else {
-        drawCanvas(currentPub, nextName, fadeOpacity);
+        drawCanvas(currentPub, toName, fadeOpacity);
         requestAnimationFrame(fadeIn);
       }
     }
@@ -660,13 +676,23 @@ footer {
     window.location.href = name ? '/tool?name=' + encodeURIComponent(name) : '/tool';
   }
 
-  // ── INIT ──
+  // ── INIT — start loading immediately ──
   const vastFont = new FontFace('Vast Shadow', 'url(https://fonts.gstatic.com/s/vastshadow/v19/pe0qMImKOZ1V62ZwbVY9dfe6.woff2)');
-  Promise.all([
-    vastFont.load().then(f => document.fonts.add(f)).catch(()=>{}),
+
+  // Start image loads in parallel right away
+  const imgPromises = [
     loadImg('city', PUB_URLS.city),
     loadImg('seaside', PUB_URLS.seaside)
-  ]).then(() => {
+  ];
+  const fontPromise = vastFont.load().then(f => document.fonts.add(f)).catch(()=>{});
+
+  // Draw as soon as first image + font ready
+  Promise.all([fontPromise, imgPromises[0]]).then(() => {
+    sizeCanvas();
+  });
+
+  // Full load then wire resize
+  Promise.all([fontPromise, ...imgPromises]).then(() => {
     sizeCanvas();
     window.addEventListener('resize', sizeCanvas);
   });
