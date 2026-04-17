@@ -14,19 +14,6 @@ app.use('/webhook/stripe', express.raw({ type: 'application/json' }));
 // JSON body for all other routes
 app.use(express.json());
 
-// Image proxy — serves R2 images through our domain to avoid CORS issues
-const https = require('https');
-app.get('/pub-image/:filename', (req, res) => {
-    const allowed = ['CITY.png', 'SEASIDE.png'];
-    const filename = req.params.filename;
-    if (!allowed.includes(filename)) return res.status(404).send('Not found');
-    const url = `https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/${filename}`;
-    https.get(url, (stream) => {
-          res.setHeader('Content-Type', 'image/png');
-          res.setHeader('Cache-Control', 'public, max-age=86400');
-          stream.pipe(res);
-    }).on('error', () => res.status(500).send('Image error'));
-});
 
 // Redirect www to apex
 app.use((req, res, next) => {
