@@ -442,7 +442,7 @@ footer {
       <img
         id="pubImg"
         class="pub-img"
-        src="https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/CITY.png"
+        src="https://pub-cf7a6d9fc8f54a55a2f5a00e3b3c4d12.r2.dev/CITY.png"
         alt="Personalised Irish pub sign print"
         onload="this.classList.add('visible')"
         onerror="handleImgError(this)"
@@ -522,7 +522,7 @@ footer {
     }
   }
 
-  function switchPub(pub, dot) {
+  function switchPub(pub, dotEl) {
     if (pub === currentPub) return;
     currentPub = pub;
     const img = document.getElementById('pubImg');
@@ -530,10 +530,21 @@ footer {
     setTimeout(() => {
       img.src = PUBS[pub];
       img.onload = () => img.classList.add('visible');
+      img.onerror = () => handleImgError(img);
     }, 300);
     document.querySelectorAll('.pub-dot').forEach(d => d.classList.remove('active'));
-    dot.classList.add('active');
+    if (dotEl) dotEl.classList.add('active');
+    else {
+      const dots = document.querySelectorAll('.pub-dot');
+      dots.forEach((d, i) => d.classList.toggle('active', (pub === 'city' ? 0 : 1) === i));
+    }
   }
+
+  // Auto-rotate pubs every 4 seconds
+  setInterval(() => {
+    const next = currentPub === 'city' ? 'seaside' : 'city';
+    switchPub(next, null);
+  }, 4000);
 
   // Cycle placeholder surnames
   const NAMES = ['Murphy','O\'Brien','Kelly','Walsh','Sullivan','O\'Connor',
