@@ -12,7 +12,7 @@ const PUB_CONFIG = {
   },
   seaside: {
     imageUrl: 'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/SEASIDE.png',
-    fasciaX: 0.4957, fasciaY: 0.528, fasciaMaxWidth: 0.5000,
+    fasciaX: 0.4957, fasciaY: 0.533, fasciaMaxWidth: 0.5000,
     fasciaFontSize: 0.044, fasciaColor: '#1C3A48',
     estX: 0.5630, estY: 0.5547, estFontSize: 0.016, estColor: '#3A5A6A',
   }
