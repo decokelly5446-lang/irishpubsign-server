@@ -25,7 +25,7 @@ async function sendEmail({ to, subject, html }) {
 }
 
 async function sendOrderConfirmation({ email, name, surname, pub, product, size, est, orderId }) {
-  const displayName = surname.endsWith('s') || surname.endsWith('S') ? surname : surname + "'s";
+    const displayName = surname.toUpperCase().endsWith('S') ? surname.toUpperCase() : surname.toUpperCase() + "'S";
   const pubLabel = pub === 'city' ? 'City Pub' : 'Seaside Pub';
   const productLabel = product === 'print' ? 'Art Print (Unframed)' : 'Framed Print';
   const estLine = est ? `<p style="margin:4px 0;color:#666;">Est. ${est}</p>` : '';
