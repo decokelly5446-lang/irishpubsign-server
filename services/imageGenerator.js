@@ -8,7 +8,7 @@ const PUB_CONFIG = {
     imageUrl: 'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/CITY.png',
         fasciaX: 0.5071, fasciaY: 0.590, fasciaMaxWidth: 0.6135,
     fasciaFontSize: 0.058, fasciaColor: '#E8C96A',
-        estX: 0.5051, estY: 0.648, estFontSize: 0.019, estColor: '#E8C96A',
+                estX: 0.5051, estY: 0.652, estFontSize: 0.019, estColor: '#E8C96A',
   },
   seaside: {
     imageUrl: 'https://pub-631a8059a22f4421be19fe52ea93b20e.r2.dev/SEASIDE.png',
