@@ -30,6 +30,27 @@ app.use('/webhook', require('./routes/webhooks'));
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok', service: 'IrishPubSign API' }));
 
+// Preview route — generates and returns composite image without placing order
+app.get('/preview', async (req, res) => {
+      const { name, est, pub } = req.query;
+      if (!name || !pub) {
+              return res.status(400).send('Missing required parameters: name, pub');
+      }
+      try {
+              const { generatePrintImage } = require('./services/imageGenerator');
+              const imageUrl = await generatePrintImage({
+                        surname: name,
+                        est: est || '1845',
+                        pub: pub.toLowerCase(),
+                        size: 'A3'
+              });
+              res.redirect(imageUrl);
+      } catch (err) {
+              console.error('Preview error:', err);
+              res.status(500).send('Preview generation failed: ' + err.message);
+      }
+});
+
 // Tool route — personalisation engine
 app.get('/tool', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'tool.html'));
