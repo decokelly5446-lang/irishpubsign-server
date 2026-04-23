@@ -59,8 +59,8 @@ router.post('/create-checkout', async (req, res) => {
       shipping_address_collection: {
         allowed_countries: ['IE', 'GB', 'US', 'AU', 'CA', 'DE', 'FR', 'NL', 'ES', 'IT'],
       },
-      // Require billing address so address fields are always filled
-      billing_address_collection: 'required',
+    
+      
       metadata: {
         surname: name,
         est: est || '',
