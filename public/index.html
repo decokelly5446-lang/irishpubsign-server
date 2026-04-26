@@ -74,7 +74,7 @@ nav {
 
 @media (max-width: 900px) {
   .hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; overflow: hidden;
     padding: 7rem 2rem 3rem;
     text-align: center;
   }
@@ -262,7 +262,7 @@ nav {
   display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3rem;
 }
 
-@media (max-width: 700px) { .steps-grid { grid-template-columns: 1fr; gap: 2rem; } }
+@media (max-width: 700px) { .steps-grid { grid-template-columns: 1fr; overflow: hidden; gap: 2rem; } }
 
 .step-item { text-align: center; }
 
@@ -327,7 +327,7 @@ nav {
   align-items: start;
 }
 
-@media (max-width: 600px) { .pricing-grid { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .pricing-grid { grid-template-columns: 1fr; overflow: hidden; } }
 
 .pricing-card {
   border: 1px solid var(--border);
