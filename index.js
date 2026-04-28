@@ -11,6 +11,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Raw body needed for Stripe webhook verification
 app.use('/webhook/stripe', express.raw({ type: 'application/json' }));
 
+app.get('/privacy', (req, res) => res.sendFile(path.join(__dirname, 'public', 'privacy.html')));
 // JSON body for all other routes
 app.use(express.json());
 
