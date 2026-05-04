@@ -5,9 +5,6 @@ const app = express();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const axios = require('axios');
 
-const adminRender = require('./routes/adminRender');
-app.use('/admin/render', adminRender);
-
 app.use((req, res, next) => {
   if (req.originalUrl === '/webhook/stripe') return next();
   express.json()(req, res, next);
