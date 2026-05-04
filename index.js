@@ -12,6 +12,14 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/tool', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'tool.html'));
+});
+
+app.get('/privacy', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'privacy.html'));
+});
+
 app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
@@ -27,7 +35,7 @@ app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (re
     const { surname, style, est, email, name, address } = session.metadata;
 
     try {
-      const gelatoRes = await axios.post(
+      await axios.post(
         'https://dashboard.gelato.com/api/v4/orders',
         {
           orderType: 'order',
@@ -59,7 +67,7 @@ app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (re
           }
         }
       );
-      console.log('Gelato order created:', gelatoRes.data.id);
+      console.log('Gelato order created for session:', session.id);
     } catch (err) {
       console.error('Gelato order error:', err.response?.data || err.message);
     }
