@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const app = express();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const axios = require('axios');
@@ -11,6 +12,8 @@ app.use((req, res, next) => {
   if (req.originalUrl === '/webhook/stripe') return next();
   express.json()(req, res, next);
 });
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
@@ -24,7 +27,7 @@ app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (re
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    const { surname, style, est, size, email, name, address } = session.metadata;
+    const { surname, style, est, email, name, address } = session.metadata;
 
     try {
       const gelatoRes = await axios.post(
@@ -36,9 +39,7 @@ app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (re
           currency: session.currency.toUpperCase(),
           items: [{
             itemReferenceId: `${session.id}-1`,
-            productUid: style === 'seaside'
-              ? 'art_print_350gsm-170gsm_poster_a3_ver'
-              : 'art_print_350gsm-170gsm_poster_a3_ver',
+            productUid: 'art_print_350gsm-170gsm_poster_a3_ver',
             files: [{ type: 'default', url: `${process.env.R2_PUBLIC_URL}/${surname}-${style}-${est}.png` }],
             quantity: 1
           }],
