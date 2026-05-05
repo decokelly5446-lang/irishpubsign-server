@@ -1,0 +1,54 @@
+.photo-strip {
+  padding: 48px 0 56px;
+  background: #0a0a0a;
+  border-top: 1px solid #1a1a1a;
+  border-bottom: 1px solid #1a1a1a;
+}
+.strip-label {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #C9A84C;
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+.strip-track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 0 32px 12px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.strip-track::-webkit-scrollbar { display: none; }
+.strip-item {
+  flex: 0 0 200px;
+  scroll-snap-align: start;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #111;
+  position: relative;
+}
+.strip-item img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.strip-item:hover img { transform: scale(1.04); }
+.strip-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  color: #C9A84C;
+  font-size: 11px;
+  padding: 24px 10px 10px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
