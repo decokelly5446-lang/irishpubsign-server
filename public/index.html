@@ -942,6 +942,58 @@ async function detectCurrencyAndUpdate() {
 }
 
 detectCurrencyAndUpdate();
+
+// ── RESTORE FROM URL PARAMS (back from Stripe) ──
+function restoreFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const name    = params.get('name');
+  const est     = params.get('est');
+  const pub     = params.get('pub');
+  const product = params.get('product');
+  const size    = params.get('size');
+
+  if (!name) return; // no params, nothing to restore
+
+  // Restore name
+  const nameEl = document.getElementById('nameInput');
+  if (nameEl) { nameEl.value = name; nameEl.dispatchEvent(new Event('input')); }
+
+  // Restore est year
+  if (est) {
+    const estEl = document.getElementById('estInput');
+    if (estEl) { estEl.value = est; estEl.dispatchEvent(new Event('input')); }
+  }
+
+  // Restore pub style
+  if (pub === 'city') {
+    const el = document.getElementById('opt-city');
+    if (el) selectPub(el, 'city');
+  } else if (pub === 'seaside') {
+    const el = document.getElementById('opt-seaside');
+    if (el) selectPub(el, 'seaside');
+  }
+
+  // Move to step 2
+  setScreen(2);
+
+  // Restore product type
+  if (product === 'framed') {
+    const el = document.getElementById('prod-framed');
+    if (el) selectProduct(el, 'framed', 75);
+  } else {
+    const el = document.getElementById('prod-print');
+    if (el) selectProduct(el, 'print', 35);
+  }
+
+  // Restore size
+  if (size) {
+    const sizeAdds = { 'A4': 0, 'A3': 10, 'A2': 20 };
+    const sizeEl = Array.from(document.querySelectorAll('.size-btn')).find(b => b.textContent.includes(size));
+    if (sizeEl) selectSize(sizeEl, size, sizeAdds[size] || 0);
+  }
+}
+restoreFromURL();
+
 </script>
 <!-- Cookie Banner -->
 <div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#0D0A06;border-top:2px solid #C9A84C;padding:1.2rem 2rem;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
