@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const checkoutRouter = require('./routes/checkout');
 const app = express();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const axios = require('axios');
@@ -79,4 +80,6 @@ app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (re
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 const PORT = process.env.PORT || 3000;
+app.use('/api', checkoutRouter);
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
