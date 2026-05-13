@@ -1038,18 +1038,27 @@ restoreFromURL();
   if (!track) return;
   var items = Array.from(track.querySelectorAll('.strip-item'));
   var total = items.length;
-  var perPage = window.innerWidth <= 600 ? 2 : 4;
   var current = 0;
 
+  function getPerPage() {
+    return window.innerWidth <= 600 ? 2 : 4;
+  }
+
   function showPage(page) {
+    var perPage = getPerPage();
     var pages = Math.ceil(total / perPage);
     if (page >= pages) page = 0;
-    var itemWidth = items[0].offsetWidth + 12;
-    track.style.transform = 'translateX(-' + (page * perPage * itemWidth) + 'px)';
+    if (page < 0) page = pages - 1;
+    // Use the actual item width including gap
+    var itemW = items[0].offsetWidth + 12;
+    var maxTranslate = track.scrollWidth - track.offsetWidth;
+    var translate = Math.min(page * perPage * itemW, maxTranslate);
+    track.style.transform = 'translateX(-' + translate + 'px)';
     current = page;
   }
 
   function advance() {
+    var perPage = getPerPage();
     var pages = Math.ceil(total / perPage);
     showPage((current + 1) % pages);
   }
@@ -1058,7 +1067,6 @@ restoreFromURL();
   track.addEventListener('mouseenter', function() { clearInterval(timer); });
   track.addEventListener('mouseleave', function() { timer = setInterval(advance, 3500); });
 })();
-
 </script>
 </body>
 </html>
