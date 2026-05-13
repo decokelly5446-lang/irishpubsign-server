@@ -1036,37 +1036,20 @@ restoreFromURL();
 (function() {
   var track = document.querySelector('.strip-track');
   if (!track) return;
-  var items = Array.from(track.querySelectorAll('.strip-item'));
-  var total = items.length;
+  var maxScroll = track.scrollWidth - track.offsetWidth;
+  var pageSize = track.offsetWidth;
   var current = 0;
 
-  function getPerPage() {
-    return window.innerWidth <= 600 ? 2 : 4;
-  }
-
-  function showPage(page) {
-    var perPage = getPerPage();
-    var pages = Math.ceil(total / perPage);
-    if (page >= pages) page = 0;
-    if (page < 0) page = pages - 1;
-    // Use the actual item width including gap
-    var itemW = items[0].offsetWidth + 12;
-    var maxTranslate = track.scrollWidth - track.offsetWidth;
-    var translate = Math.min(page * perPage * itemW, maxTranslate);
-    track.style.transform = 'translateX(-' + translate + 'px)';
-    current = page;
-  }
-
   function advance() {
-    var perPage = getPerPage();
-    var pages = Math.ceil(total / perPage);
-    showPage((current + 1) % pages);
+    var next = current + pageSize;
+    if (next >= maxScroll) next = 0;
+    track.style.transform = 'translateX(-' + next + 'px)';
+    current = next;
   }
 
   var timer = setInterval(advance, 3500);
   track.addEventListener('mouseenter', function() { clearInterval(timer); });
   track.addEventListener('mouseleave', function() { timer = setInterval(advance, 3500); });
-})();
-</script>
+})();</script>
 </body>
 </html>
