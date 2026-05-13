@@ -38,9 +38,7 @@
 .strip-item:hover img { transform: scale(1.04); }
 .strip-caption {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 0; left: 0; right: 0;
   background: linear-gradient(transparent, rgba(0,0,0,0.75));
   color: #C9A84C;
   font-size: 10px;
@@ -50,7 +48,5 @@
   font-weight: 500;
 }
 @media (max-width: 600px) {
-  .strip-item {
-    flex: 0 0 130px;
-  }
+  .strip-item { flex: 0 0 130px; }
 }
