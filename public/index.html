@@ -1031,6 +1031,34 @@ restoreFromURL();
     localStorage.setItem('cookie_consent', v);
     document.getElementById('cookie-banner').style.display = 'none';
   }
+
+// ── PHOTO STRIP AUTO-SCROLL ──
+(function() {
+  var track = document.querySelector('.strip-track');
+  if (!track) return;
+  var items = Array.from(track.querySelectorAll('.strip-item'));
+  var total = items.length;
+  var perPage = window.innerWidth <= 600 ? 2 : 4;
+  var current = 0;
+
+  function showPage(page) {
+    var pages = Math.ceil(total / perPage);
+    if (page >= pages) page = 0;
+    var itemWidth = items[0].offsetWidth + 12;
+    track.style.transform = 'translateX(-' + (page * perPage * itemWidth) + 'px)';
+    current = page;
+  }
+
+  function advance() {
+    var pages = Math.ceil(total / perPage);
+    showPage((current + 1) % pages);
+  }
+
+  var timer = setInterval(advance, 3500);
+  track.addEventListener('mouseenter', function() { clearInterval(timer); });
+  track.addEventListener('mouseleave', function() { timer = setInterval(advance, 3500); });
+})();
+
 </script>
 </body>
 </html>
