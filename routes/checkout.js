@@ -54,7 +54,7 @@ router.post('/create-checkout', async (req, res) => {
       }],
       mode: 'payment',
       success_url: `${process.env.BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.BASE_URL}/`,
+      cancel_url: `${process.env.BASE_URL}/tool?name=${encodeURIComponent(name)}&est=${encodeURIComponent(est)}&pub=${encodeURIComponent(pub)}&product=${encodeURIComponent(product)}&size=${encodeURIComponent(size)}`,
       // Always collect full shipping address — required fields for Gelato
       shipping_address_collection: {
         allowed_countries: ['IE', 'GB', 'US', 'AU', 'CA', 'DE', 'FR', 'NL', 'ES', 'IT'],
