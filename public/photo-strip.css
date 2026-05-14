@@ -1,6 +1,6 @@
 @keyframes conveyor {
   0%   { transform: translateX(0); }
-  100% { transform: translateX(-25%); }
+  100% { transform: translateX(var(--loop-width, -1920px)); }
 }
 
 .photo-strip {
@@ -58,5 +58,4 @@
 }
 @media (max-width: 600px) {
   .strip-item { flex: 0 0 130px; }
-  .strip-track { animation-duration: 35s; }
 }
