@@ -2099,6 +2099,7 @@ restoreFromURL();
   track.addEventListener('mouseleave', function() { timer = setInterval(advance, 3500); });
 })();</script>
 
-<script>document.addEventListener('DOMContentLoaded',function(){var t=document.querySelector('.strip-track');if(!t)return;var orig=Array.from(t.querySelectorAll('.strip-item'));for(var i=0;i<3;i++){orig.forEach(function(el){t.appendChild(el.cloneNode(true));});}});</script>
+<script>document.addEventListener('DOMContentLoaded',function(){var t=document.querySelector('.strip-track');if(!t)return;var orig=Array.from(t.querySelectorAll('.strip-item'));for(var i=0;i<3;i++){orig.forEach(function(el){t.appendChild(el.cloneNode(true));});}// Set exact loop width as CSS variable so animation is pixel-perfect
+requestAnimationFrame(function(){var item=t.querySelector('.strip-item');if(!item)return;var itemW=item.getBoundingClientRect().width;var gap=12;var loopPx=orig.length*(itemW+gap);t.style.setProperty('--loop-width','-'+loopPx.toFixed(1)+'px');});});</script>
 </body>
 </html>
