@@ -1043,7 +1043,8 @@ restoreFromURL();
     document.getElementById('cookie-banner').style.display = 'none';
   }
 
-(function(){var t=document.querySelector('.strip-track');if(!t)return;var orig=Array.from(t.querySelectorAll('.strip-item'));for(var i=0;i<3;i++){orig.forEach(function(el){t.appendChild(el.cloneNode(true));});}})();var loopW=n*192;var pos=0;var paused=false;function tick(){if(!paused){pos+=0.5;if(pos>=loopW)pos-=loopW;track.style.transform='translateX(-'+pos.toFixed(1)+'px)';}requestAnimationFrame(tick);}track.addEventListener('mouseenter',function(){paused=true;});track.addEventListener('mouseleave',function(){paused=false;});requestAnimationFrame(tick);});
+(function(){var t=document.querySelector('.strip-track');if(!t)return;var orig=Array.from(t.querySelectorAll('.strip-item'));var n=orig.length;for(var i=0;i<3;i++){orig.forEach(function(el){t.appendChild(el.cloneNode(true));});}})();
+
 YPE html>
 <html lang="en">
 <head>
