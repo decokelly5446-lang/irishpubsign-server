@@ -58,5 +58,5 @@
 }
 @media (max-width: 600px) {
   .strip-item { flex: 0 0 130px; }
-  .strip-track { animation-duration: 25s; }
+  .strip-track { animation-duration: 35s; }
 }
