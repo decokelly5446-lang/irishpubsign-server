@@ -1,3 +1,8 @@
+@keyframes conveyor {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 .photo-strip {
   padding: 48px 0 56px;
   background: #0a0a0a;
@@ -17,9 +22,13 @@
 .strip-track {
   display: flex;
   gap: 12px;
-  padding: 0 0 12px;
   width: max-content;
+  padding-bottom: 12px;
+  animation: conveyor 35s linear infinite;
   will-change: transform;
+}
+.strip-track:hover {
+  animation-play-state: paused;
 }
 .strip-item {
   flex: 0 0 180px;
@@ -49,4 +58,5 @@
 }
 @media (max-width: 600px) {
   .strip-item { flex: 0 0 130px; }
+  .strip-track { animation-duration: 25s; }
 }
