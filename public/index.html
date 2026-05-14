@@ -1043,7 +1043,7 @@ restoreFromURL();
     document.getElementById('cookie-banner').style.display = 'none';
   }
 
-(function(){var t=document.querySelector('.strip-track');if(!t)return;var orig=Array.from(t.querySelectorAll('.strip-item'));var n=orig.length;for(var i=0;i<3;i++){orig.forEach(function(el){t.appendChild(el.cloneNode(true));});}})();
+
 
 YPE html>
 <html lang="en">
@@ -2098,5 +2098,7 @@ restoreFromURL();
   track.addEventListener('mouseenter', function() { clearInterval(timer); });
   track.addEventListener('mouseleave', function() { timer = setInterval(advance, 3500); });
 })();</script>
+
+<script>document.addEventListener('DOMContentLoaded',function(){var t=document.querySelector('.strip-track');if(!t)return;var orig=Array.from(t.querySelectorAll('.strip-item'));for(var i=0;i<3;i++){orig.forEach(function(el){t.appendChild(el.cloneNode(true));});}});</script>
 </body>
 </html>
