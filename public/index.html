@@ -531,6 +531,17 @@ footer {
     width: 100%;
   }
 
+
+  .nav-tagline {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+    font-style: italic;
+    opacity: 0.9;
+  }
+  @media (max-width: 600px) { .nav-tagline { display: none; } }
+
 </style>
 <link rel="stylesheet" href="/photo-strip.css">
 </head>
@@ -542,7 +553,7 @@ footer {
 
 <nav>
   <a href="/" class="nav-logo">IrishPubSign.com</a>
-  <a href="#personalise" class="nav-cta">Create Yours →</a>
+  <span class="nav-tagline">Original Irish illustrations, not AI-generated</span>
 </nav>
 
 <!-- ══ HERO ══ -->
@@ -1032,7 +1043,7 @@ restoreFromURL();
     document.getElementById('cookie-banner').style.display = 'none';
   }
 
-window.addEventListener('load',function(){var track=document.querySelector('.strip-track');if(!track)return;var orig=Array.from(track.querySelectorAll('.strip-item'));var n=orig.length;orig.forEach(function(el){track.appendChild(el.cloneNode(true));});var loopW=n*192;var pos=0;var paused=false;function tick(){if(!paused){pos+=0.5;if(pos>=loopW)pos-=loopW;track.style.transform='translateX(-'+pos.toFixed(1)+'px)';}requestAnimationFrame(tick);}track.addEventListener('mouseenter',function(){paused=true;});track.addEventListener('mouseleave',function(){paused=false;});requestAnimationFrame(tick);});
+(function(){var t=document.querySelector('.strip-track');if(!t)return;Array.from(t.querySelectorAll('.strip-item')).forEach(function(el){t.appendChild(el.cloneNode(true));});})();var loopW=n*192;var pos=0;var paused=false;function tick(){if(!paused){pos+=0.5;if(pos>=loopW)pos-=loopW;track.style.transform='translateX(-'+pos.toFixed(1)+'px)';}requestAnimationFrame(tick);}track.addEventListener('mouseenter',function(){paused=true;});track.addEventListener('mouseleave',function(){paused=false;});requestAnimationFrame(tick);});
 YPE html>
 <html lang="en">
 <head>
