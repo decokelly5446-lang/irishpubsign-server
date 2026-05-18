@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const checkoutRouter = require('./routes/checkout');
+const adminRenderRouter = require('./routes/adminRender');
 const app = express();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const axios = require('axios');
@@ -81,5 +82,6 @@ app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 const PORT = process.env.PORT || 3000;
 app.use('/api', checkoutRouter);
+app.use('/admin', adminRenderRouter);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
