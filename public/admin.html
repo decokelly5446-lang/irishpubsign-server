@@ -68,7 +68,7 @@ async function generate() {
   btn.textContent = 'Generating...';
   document.getElementById('result').style.display = 'none';
   document.getElementById('error').style.display = 'none';
-  document.getElementById('status').textContent = 'Rendering your pub sign — this takes about 15 seconds...';
+  document.getElementById('status').textContent = 'Rendering your pub sign — city takes ~15s, seaside up to ~45s. Please wait...';
 
   try {
     const res = await fetch('/admin/render', {
