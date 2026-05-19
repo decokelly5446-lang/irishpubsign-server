@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IrishPubSign — Admin Render</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0D0A06; color:#F2ECD8; font-family:Georgia,serif; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+.wrap { width:100%; max-width:480px; padding:40px 24px; }
+h1 { font-size:1.4rem; color:#C9A84C; margin-bottom:8px; }
+p { font-size:0.85rem; color:#888; margin-bottom:32px; }
+label { display:block; font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; color:#C9A84C; margin-bottom:6px; }
+input, select { width:100%; background:#1a1408; border:1px solid #333; color:#F2ECD8; padding:12px 14px; border-radius:6px; font-size:1rem; font-family:Georgia,serif; margin-bottom:20px; }
+input:focus, select:focus { outline:none; border-color:#C9A84C; }
+button { width:100%; background:#C9A84C; color:#0D0A06; border:none; padding:14px; border-radius:6px; font-size:1rem; font-weight:700; cursor:pointer; letter-spacing:0.05em; }
+button:hover { background:#e8c96a; }
+button:disabled { opacity:0.5; cursor:not-allowed; }
+.result { margin-top:28px; text-align:center; }
+.result img { width:100%; border-radius:8px; margin-bottom:16px; border:1px solid #333; }
+.result a { display:inline-block; background:#1a1408; border:1px solid #C9A84C; color:#C9A84C; padding:10px 24px; border-radius:6px; text-decoration:none; font-size:0.85rem; letter-spacing:0.05em; }
+.result a:hover { background:#C9A84C; color:#0D0A06; }
+.error { margin-top:20px; color:#e55; font-size:0.85rem; text-align:center; }
+.status { margin-top:20px; color:#888; font-size:0.85rem; text-align:center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Admin Render Tool</h1>
+  <p>Generate a personalised pub sign image for outreach or social content.</p>
+
+  <label>Surname</label>
+  <input type="text" id="surname" placeholder="e.g. Kennedy" />
+
+  <label>Est. Year</label>
+  <input type="text" id="est" value="1845" />
+
+  <label>Pub Style</label>
+  <select id="pub">
+    <option value="city">City Pub</option>
+    <option value="seaside">Seaside Pub</option>
+  </select>
+
+  <label>Size</label>
+  <select id="size">
+    <option value="A3">A3</option>
+    <option value="A4">A4</option>
+    <option value="A2">A2</option>
+  </select>
+
+  <button id="btn" onclick="generate()">Generate Image</button>
+
+  <div class="result" id="result" style="display:none">
+    <img id="preview" src="" alt="Rendered pub sign" />
+    <a id="dlLink" href="" download>Download Image</a>
+  </div>
+  <div class="error" id="error" style="display:none"></div>
+  <div class="status" id="status"></div>
+</div>
+
+<script>
+async function generate() {
+  const surname = document.getElementById('surname').value.trim();
+  if (!surname) { showError('Please enter a surname'); return; }
+
+  const btn = document.getElementById('btn');
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('error').style.display = 'none';
+  document.getElementById('status').textContent = 'Rendering your pub sign — this takes about 15 seconds...';
+
+  try {
+    const res = await fetch('/admin/render', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-admin-token': 'irishpubsign2026admin'
+      },
+      body: JSON.stringify({
+        surname: surname,
+        est: document.getElementById('est').value || '1845',
+        pub: document.getElementById('pub').value,
+        size: document.getElementById('size').value
+      })
+    });
+
+    const data = await res.json();
+
+    if (data.url) {
+      document.getElementById('preview').src = data.url;
+      document.getElementById('dlLink').href = data.url;
+      document.getElementById('dlLink').download = surname + '-pub-sign.png';
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('status').textContent = 'Done! Right-click the image to save, or use the download button.';
+    } else {
+      showError(data.error || 'Something went wrong');
+    }
+  } catch(e) {
+    showError('Request failed: ' + e.message);
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Generate Image';
+}
+
+function showError(msg) {
+  const el = document.getElementById('error');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('status').textContent = '';
+}
+
+document.getElementById('surname').addEventListener('keydown', e => {
+  if (e.key === 'Enter') generate();
+});
+</script>
+</body>
+</html>
