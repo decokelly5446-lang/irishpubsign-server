@@ -22,6 +22,10 @@ app.get('/privacy', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'privacy.html'));
 });
 
+app.get('/success', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'success.html'));
+});
+
 app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
