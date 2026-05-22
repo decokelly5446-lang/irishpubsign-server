@@ -231,6 +231,23 @@ main { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 4rem; }
 .powered { text-align: center; font-size: 0.68rem; color: rgba(212,201,168,0.18); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 0.8rem; }
 .proto-note { text-align: center; font-size: 0.72rem; color: rgba(212,201,168,0.2); margin-top: 1rem; font-style: italic; }
 </style>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '3511042155729206');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=3511042155729206&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 
@@ -501,7 +518,21 @@ async function placeOrder() {
   btn.disabled = true;
   btn.textContent = "Processing...";
   try {
-    const response = await fetch("/api/create-checkout", {
+    // ── Meta Pixel: InitiateCheckout ──
+  const _prices = {print:{A4:35,A3:45,A2:55},framed:{A4:75,A3:85,A2:95}};
+  const _orderValue = (_prices[state.product] && _prices[state.product][state.size]) || 0;
+  try { sessionStorage.setItem('ips_order', JSON.stringify({value:_orderValue, product:state.product, size:state.size})); } catch(e){}
+  if (typeof fbq !== 'undefined') {
+    fbq('track', 'InitiateCheckout', {
+      value: _orderValue,
+      currency: 'EUR',
+      content_type: 'product',
+      content_ids: [state.product + '_' + state.size],
+      num_items: 1
+    });
+  }
+  // ── End Meta Pixel ──
+  const response = await fetch("/api/create-checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
