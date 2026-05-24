@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Order Confirmed — IrishPubSign.com</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QGHEXJKWB0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QGHEXJKWB0');
+</script>
 <!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
@@ -100,19 +108,16 @@ src="https://www.facebook.com/tr?id=3511042155729206&ev=PageView&noscript=1"
 <a href="/" class="btn">Back to Home</a>
 
 <script>
-// Fire Meta Pixel Purchase event
-// Retrieve order value from sessionStorage (set at InitiateCheckout) or default
 (function() {
   try {
     var orderData = JSON.parse(sessionStorage.getItem('ips_order') || '{}');
     var value = orderData.value || 0;
     var product = orderData.product || 'unknown';
     var size = orderData.size || 'A3';
-
-    // Get session_id from URL for deduplication
     var params = new URLSearchParams(window.location.search);
     var sessionId = params.get('session_id') || '';
 
+    // Fire Meta Pixel Purchase event
     if (typeof fbq !== 'undefined') {
       fbq('track', 'Purchase', {
         value: value,
@@ -123,6 +128,22 @@ src="https://www.facebook.com/tr?id=3511042155729206&ev=PageView&noscript=1"
         order_id: sessionId
       });
     }
+
+    // Fire GA4 Purchase event
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'purchase', {
+        transaction_id: sessionId,
+        value: value,
+        currency: 'EUR',
+        items: [{
+          item_id: product + '_' + size,
+          item_name: 'Irish Pub Sign - ' + product + ' ' + size,
+          price: value,
+          quantity: 1
+        }]
+      });
+    }
+
     // Clear stored order data
     sessionStorage.removeItem('ips_order');
   } catch(e) {}
