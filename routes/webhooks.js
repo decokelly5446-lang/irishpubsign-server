@@ -6,7 +6,7 @@ const imageService = require('../services/imageGenerator');
 const emailService = require('../services/email');
 const crypto = require('crypto');
 
-async function sendMetaPurchaseEvent(session) {
+async function sendMetaPurchaseEvent(session) {h
   const pixelId = process.env.FB_PIXEL_ID;
   const accessToken = process.env.FB_ACCESS_TOKEN;
   if (!pixelId || !accessToken) return;
@@ -95,7 +95,11 @@ router.post('/gelato', express.json(), async (req, res) => {
 });
 
 async function handleSuccessfulOrder(session) {
-  const { surname, est, pub, product, size, gelato_uid } = session.metadata;
+  const { surname, est, pub, product, size, gelato_uid } = session.metadata || {};
+  if (!surname || !gelato_uid) {
+    console.error('Missing required metadata in session:', session.id, JSON.stringify(session.metadata));
+    throw new Error(`Missing metadata for session ${session.id}`);
+  }
   const shipping = session.shipping_details;
   const billing = session.customer_details;
   const customerEmail = session.customer_details?.email;
