@@ -240,6 +240,7 @@ main { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 4rem; }
 .stripe-row .stripe-field { flex: 1; margin: 0; }
 .powered { text-align: center; font-size: 0.68rem; color: rgba(212,201,168,0.18); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 0.8rem; }
 .proto-note { text-align: center; font-size: 0.72rem; color: rgba(212,201,168,0.2); margin-top: 1rem; font-style: italic; }
+.field-instruction { font-size: 0.78rem; color: var(--gold); opacity: 0.75; margin-bottom: 8px; letter-spacing: 0.04em; }
 </style>
 <!-- Meta Pixel Code -->
 <script>
@@ -283,7 +284,8 @@ src="https://www.facebook.com/tr?id=3511042155729206&ev=PageView&noscript=1"
     <div class="field-row">
       <div class="field">
         <div class="section-label">Surname</div>
-        <input type="text" class="field-input" id="nameInput" placeholder="Murphy" maxlength="20" autocomplete="off" spellcheck="false">
+        <div class="field-instruction">Type your surname to see your pub come to life</div>
+                <input type="text" class="field-input" id="nameInput" placeholder="e.g. Murphy, O'Brien..." maxlength="20" autocomplete="off" spellcheck="false" autofocus>
         <div class="field-hint">Fadas supported — e.g. Ó Briain</div>
       </div>
       <div class="field">
