@@ -108,7 +108,7 @@ src="https://www.facebook.com/tr?id=1305041061783975&ev=PageView&noscript=1"
 <a href="/" class="btn">Back to Home</a>
 
 <script>
-(function() {
+(async function() {
   try {
     var orderData = JSON.parse(sessionStorage.getItem('ips_order') || '{}');
     var value = orderData.value || 0;
@@ -117,6 +117,9 @@ src="https://www.facebook.com/tr?id=1305041061783975&ev=PageView&noscript=1"
     var params = new URLSearchParams(window.location.search);
     var sessionId = params.get('session_id') || '';
     if (!sessionId) return;
+    const verifyRes = await fetch('/verify-session?session_id=' + sessionId);
+    const verifyData = await verifyRes.json();
+    if (!verifyData.paid) return;
 
     // Fire Meta Pixel Purchase event
     if (typeof fbq !== 'undefined') {
