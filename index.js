@@ -22,6 +22,17 @@ app.get('/privacy', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'privacy.html'));
 });
 
+app.get('/verify-session', async (req, res) => {
+  const { session_id } = req.query;
+  if (!session_id) return res.json({ paid: false });
+  try {
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+    res.json({ paid: session.payment_status === 'paid' });
+  } catch (e) {
+    res.json({ paid: false });
+  }
+});
+
 app.get('/success', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'success.html'));
 });
