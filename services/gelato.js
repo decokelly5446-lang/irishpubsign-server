@@ -37,8 +37,8 @@ async function createOrder({ orderReference, customerEmail, customerName, shippi
     ],
     shipmentMethodUid: 'normal',
     shippingAddress: {
-      firstName: shippingAddress.name?.split(' ')[0] || customerName?.split(' ')[0] || 'Customer',
-      lastName: shippingAddress.name?.split(' ').slice(1).join(' ') || customerName?.split(' ').slice(1).join(' ') || '',
+      firstName: (shippingAddress.name || customerName || 'Customer').split(' ')[0],
+      lastName: (shippingAddress.name || customerName || 'Customer').split(' ').slice(1).join(' '),
       addressLine1: shippingAddress.line1 || '',
       addressLine2: shippingAddress.line2 || '',
       city: shippingAddress.city || '',
