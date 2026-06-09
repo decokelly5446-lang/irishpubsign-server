@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Order Confirmed — IrishPubSign.com</title>
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=hG-QGHEXJKWB0"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QGHEXJKWB0"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -111,7 +111,7 @@ src="https://www.facebook.com/tr?id=1305041061783975&ev=PageView&noscript=1"
 (async function() {
   try {
     var orderData = JSON.parse(sessionStorage.getItem('ips_order') || '{}');
-    var value = orderData.value || 0;
+    var value = verifyData.amount || 0;
     var product = orderData.product || 'unknown';
     var size = orderData.size || 'A3';
     var params = new URLSearchParams(window.location.search);
