@@ -27,7 +27,7 @@ app.get('/verify-session', async (req, res) => {
   if (!session_id) return res.json({ paid: false });
   try {
     const session = await stripe.checkout.sessions.retrieve(session_id);
-    res.json({ paid: session.payment_status === 'paid' });
+res.json({ paid: session.payment_status === 'paid', amount: (session.amount_total || 0) / 100, currency: session.currency?.toUpperCase() || 'EUR' });
   } catch (e) {
     res.json({ paid: false });
   }
